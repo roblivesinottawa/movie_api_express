@@ -1,8 +1,6 @@
 module.exports = {
-HOST: "localhost",
-USER: "root",
-PASSWORD: "",
-DB: "movies_app"
-
-
-}
+  HOST: "localhost",
+  USER: "root",
+  PASSWORD: "",
+  DB: "movies_app",
+};

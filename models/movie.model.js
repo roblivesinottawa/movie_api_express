@@ -41,13 +41,77 @@ Movie.findById = (movieId, result) => {
 };
 
 // show all the movies stored in the database
-Movie.getAll = (result) => {};
+Movie.getAll = (result) => {
+  sql.query(`SELECT * FROM movies_app`, (req, res) => {
+    if (err) {
+      console.log(`could not get all movies from database ${err}`);
+      result(null, err);
+      return;
+    }
+
+    console.log(`movies, ${res}`);
+    result(null, res);
+  });
+};
 
 // update a movie using the specific id
-Movie.updateById = (id, movie, result) => {};
+Movie.updateById = (id, movie, result) => {
+  sql.query(
+    `UPDATE movie_app SET name = ?, release_year = ?, country = ?, watched = ? WHERE id = ?`,
+    [movie.name, movie.release_year, movie.country, movie.watched],
+    (err, res) => {
+      if (err) {
+        console.log(`could not update movie, ${err}`);
+        result(null, err);
+        return;
+      }
+      if (res.affectedRows == 0) {
+        result({ kind: `not found` }, null);
+        return;
+      }
+      console.log(`Updated movie: ${{ id: id, ...movie }}`);
+      result(null, { id: id, ...customer });
+    },
+  );
+};
 
 // remove a movie with a specific id
-Movie.remove = (id, result) => {};
+Movie.remove = (id, result) => {
+  sql.query(
+    `
+  DELETE FROM movies_app WHERE id = ?`,
+    id,
+    (err, res) => {
+      if (err) {
+        console.log(`Could not delete movie, ${err}`);
+        result(null, err);
+        return;
+      }
+      if (res.affectedRows == 0) {
+        result({ kind: `not found` }, null);
+        return;
+      }
+      console.log(`Deleted movie with id: ${id}`);
+      result(null, res);
+    },
+  );
+};
 
 // delete all movies from database
-Movie.removeAll = (result) => {};
+Movie.removeAll = (result) => {
+  sql.query(
+    `
+  DELETE FROM movies_app`,
+    (err, res) => {
+      if (err) {
+        console.log(`Could not delete movies, ${err}`);
+        result(null, err);
+        return;
+      }
+      console.log(`Deleted ${res.affectedRows} movies`);
+      result(null, res);
+    },
+  );
+};
+
+module.exports = Movie;
